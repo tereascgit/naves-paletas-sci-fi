@@ -1,11 +1,20 @@
+const PALETTE_KEY = 'sciFiPalettes';
+const TIMESTAMP_KEY = 'sciFiTimestamp';
+const FAVORITES_KEY = 'sciFiFavorites';
+const CACHE_DURATION = 1000 * 60 * 60 * 24; // 1 día
+
 const paletteList = document.getElementById('paletteList');
 const favoritesList = document.getElementById('favoritesList');
 const searchInput = document.getElementById('searchInput');
 
-const PALETTE_KEY = 'cachedPalettes';
-const FAVORITES_KEY = 'favoritePalettes';
-const TIMESTAMP_KEY = 'cacheTimestamp';
-const CACHE_DURATION = 1000 * 60 * 60 * 24; // 1 día
+// Asignar directamente el evento de búsqueda
+searchInput.oninput = function () {
+  const query = searchInput.value.toLowerCase();
+  fetchPalettes().then(palettes => {
+    const filtered = palettes.filter(p => p.name.toLowerCase().includes(query));
+    renderPalettes(filtered);
+  });
+};
 
 function fetchPalettes() {
   const cached = localStorage.getItem(PALETTE_KEY);
@@ -16,7 +25,7 @@ function fetchPalettes() {
   }
 
   return fetch('assets/palettes.json')
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
       localStorage.setItem(PALETTE_KEY, JSON.stringify(data));
       localStorage.setItem(TIMESTAMP_KEY, Date.now());
@@ -28,27 +37,61 @@ function renderPalettes(palettes) {
   paletteList.innerHTML = '';
   palettes.forEach(palette => {
     const li = document.createElement('li');
-    li.classList.add('palette-item');
+    li.className = 'palette-item';
 
     const title = document.createElement('h3');
     title.textContent = palette.name;
-    title.classList.add('palette-title');
+    title.className = 'palette-title';
 
     const colorsDiv = document.createElement('div');
-    colorsDiv.classList.add('palette');
+    colorsDiv.className = 'palette';
+    colorsDiv.dataset.name = palette.name;
+
+    // Asignar función directamente al clic
+    colorsDiv.onclick = function () {
+      toggleFavorite(palette);
+    };
 
     palette.colors.forEach(color => {
       const colorDiv = document.createElement('div');
-      colorDiv.classList.add('palette_color');
+      colorDiv.className = 'palette_color';
       colorDiv.style.backgroundColor = color;
       colorsDiv.appendChild(colorDiv);
     });
 
-    colorsDiv.addEventListener('click', () => toggleFavorite(palette));
-
     li.appendChild(title);
     li.appendChild(colorsDiv);
     paletteList.appendChild(li);
+  });
+}
+
+function renderFavorites(favorites) {
+  favoritesList.innerHTML = '';
+  favorites.forEach(palette => {
+    const li = document.createElement('li');
+    li.className = 'palette-item';
+
+    const title = document.createElement('h3');
+    title.textContent = palette.name;
+    title.className = 'palette-title';
+
+    const colorsDiv = document.createElement('div');
+    colorsDiv.className = 'palette';
+
+    colorsDiv.onclick = function () {
+      toggleFavorite(palette);
+    };
+
+    palette.colors.forEach(color => {
+      const colorDiv = document.createElement('div');
+      colorDiv.className = 'palette_color';
+      colorDiv.style.backgroundColor = color;
+      colorsDiv.appendChild(colorDiv);
+    });
+
+    li.appendChild(title);
+    li.appendChild(colorsDiv);
+    favoritesList.appendChild(li);
   });
 }
 
@@ -64,54 +107,11 @@ function toggleFavorite(palette) {
 
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
   renderFavorites(favorites);
-  highlightFavorites(favorites);
 }
 
-function renderFavorites(favorites) {
-  favoritesList.innerHTML = '';
-  favorites.forEach(palette => {
-    const title = document.createElement('h3');
-    title.textContent = palette.name;
-    title.style.marginBottom = '5px';
-    title.style.color = '#fff';
-    favoritesList.appendChild(title);
-
-    const div = document.createElement('div');
-    div.classList.add('palette');
-
-    palette.colors.forEach(color => {
-      const colorDiv = document.createElement('div');
-      colorDiv.classList.add('palette_color');
-      colorDiv.style.backgroundColor = color;
-      div.appendChild(colorDiv);
-    });
-
-    favoritesList.appendChild(div);
-  });
-}
-
-function highlightFavorites(favorites) {
-  document.querySelectorAll('.palette').forEach(div => {
-    const name = div.dataset.name;
-    if (favorites.find(p => p.name === name)) {
-      div.classList.add('selected');
-    } else {
-      div.classList.remove('selected');
-    }
-  });
-}
-
-searchInput.addEventListener('input', () => {
-  const query = searchInput.value.toLowerCase();
-  fetchPalettes().then(palettes => {
-    const filtered = palettes.filter(p => p.name.toLowerCase().includes(query));
-    renderPalettes(filtered);
-    highlightFavorites(JSON.parse(localStorage.getItem(FAVORITES_KEY)) || []);
-  });
-});
-
+// Inicializar la app
 fetchPalettes().then(palettes => {
   renderPalettes(palettes);
-  renderFavorites(JSON.parse(localStorage.getItem(FAVORITES_KEY)) || []);
-  highlightFavorites(JSON.parse(localStorage.getItem(FAVORITES_KEY)) || []);
+  const favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+  renderFavorites(favorites);
 });
