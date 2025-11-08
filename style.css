@@ -1,3 +1,4 @@
+/* Estructura general */
 body {
   font-family: Arial, sans-serif;
   padding: 20px;
@@ -5,33 +6,20 @@ body {
   color: #eee;
 }
 
-.palette {
-  display: flex;
-  margin-bottom: 20px;
-  cursor: pointer;
-  border: 2px solid transparent;
-}
-
-.palette.selected {
-  border-color: gold;
-}
-
-.palette_color {
-  width: 40px;
-  height: 40px;
-}
-
+/* Buscador */
 input {
   margin-bottom: 20px;
   padding: 10px;
   width: 100%;
 }
 
+/* Listas */
 ul {
   list-style: none;
   padding: 0;
 }
 
+/* Paletas */
 .palette-item {
   margin-bottom: 20px;
 }
@@ -41,12 +29,24 @@ ul {
   color: #fff;
 }
 
+/* Contenedor de colores */
 .palette {
   display: flex;
   gap: 5px;
+  margin-bottom: 20px;
   cursor: pointer;
+  border: 2px solid transparent;
 }
 
+.palette:hover {
+  border-color: #555;
+}
+
+.palette.selected {
+  border-color: gold;
+}
+
+/* Cada color */
 .palette_color {
   width: 40px;
   height: 40px;
