@@ -2,9 +2,10 @@
 const FAVORITES_KEY = 'sciFiFavorites';
 
 // Referencias a elementos del DOM
-const paletteList = document.getElementById('paletteList');
-const favoritesList = document.getElementById('favoritesList');
-const searchInput = document.getElementById('searchInput');
+const paletteList = document.querySelector('#paletteList');
+const favoritesList = document.querySelector('#favoritesList');
+const searchInput = document.querySelector('#searchInput');
+
 
 // Evento de búsqueda: se activa cada vez que el usuario escribe
 searchInput.oninput = function () {
