@@ -1,0 +1,28 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #111;
+  color: #eee;
+}
+
+.palette {
+  display: flex;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.palette.selected {
+  border-color: gold;
+}
+
+.palette_color {
+  width: 40px;
+  height: 40px;
+}
+
+input {
+  margin-bottom: 20px;
+  padding: 10px;
+  width: 100%;
+}

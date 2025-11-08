@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Tardis Blue",
+    "colors": ["#003B6F", "#005A9C", "#007ACC", "#3399FF"]
+  },
+  {
+    "name": "Millennium Falcon",
+    "colors": ["#C0C0C0", "#A9A9A9", "#808080", "#696969"]
+  },
+  {
+    "name": "Battlestar Galactica",
+    "colors": ["#2C2C2C", "#3E3E3E", "#5A5A5A", "#7B7B7B"]
+  },
+  {
+    "name": "Serenity",
+    "colors": ["#F4E2D8", "#D9BBA0", "#A67C52", "#6B4226"]
+  },
+  {
+    "name": "Nostromo",
+    "colors": ["#1A1A1A", "#333333", "#4D4D4D", "#666666"]
+  }
+]
