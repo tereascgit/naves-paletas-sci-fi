@@ -1,57 +1,49 @@
-const PALETTE_KEY = 'sciFiPalettes';
-const TIMESTAMP_KEY = 'sciFiTimestamp';
+// Claves para guardar favoritos en localStorage
 const FAVORITES_KEY = 'sciFiFavorites';
-const CACHE_DURATION = 1000 * 60 * 60 * 24; // 1 día
 
+// Referencias a elementos del DOM
 const paletteList = document.getElementById('paletteList');
 const favoritesList = document.getElementById('favoritesList');
 const searchInput = document.getElementById('searchInput');
 
-// Asignar directamente el evento de búsqueda
+// Evento de búsqueda: se activa cada vez que el usuario escribe
 searchInput.oninput = function () {
   const query = searchInput.value.toLowerCase();
-  fetchPalettes().then(palettes => {
-    const filtered = palettes.filter(p => p.name.toLowerCase().includes(query));
-    renderPalettes(filtered);
-  });
+
+  // Cargar paletas y filtrar por nombre
+  fetch('assets/palettes.json')
+    .then(response => response.json())
+    .then(palettes => {
+      const filtered = palettes.filter(p => p.name.toLowerCase().includes(query));
+      renderPalettes(filtered);
+    });
 };
 
-function fetchPalettes() {
-  const cached = localStorage.getItem(PALETTE_KEY);
-  const timestamp = localStorage.getItem(TIMESTAMP_KEY);
-
-  if (cached && timestamp && Date.now() - timestamp < CACHE_DURATION) {
-    return Promise.resolve(JSON.parse(cached));
-  }
-
-  return fetch('assets/palettes.json')
-    .then(response => response.json())
-    .then(data => {
-      localStorage.setItem(PALETTE_KEY, JSON.stringify(data));
-      localStorage.setItem(TIMESTAMP_KEY, Date.now());
-      return data;
-    });
-}
-
+// Renderiza todas las paletas en pantalla
 function renderPalettes(palettes) {
-  paletteList.innerHTML = '';
+  paletteList.innerHTML = ''; // Limpiar lista anterior
+
   palettes.forEach(palette => {
+    // Crear elemento de lista
     const li = document.createElement('li');
     li.className = 'palette-item';
 
+    // Crear título con el nombre de la paleta
     const title = document.createElement('h3');
     title.textContent = palette.name;
     title.className = 'palette-title';
 
+    // Crear contenedor de colores
     const colorsDiv = document.createElement('div');
     colorsDiv.className = 'palette';
     colorsDiv.dataset.name = palette.name;
 
-    // Asignar función directamente al clic
+    // Al hacer clic en la paleta, se marca como favorita
     colorsDiv.onclick = function () {
       toggleFavorite(palette);
     };
 
+    // Crear cada color dentro de la paleta
     palette.colors.forEach(color => {
       const colorDiv = document.createElement('div');
       colorDiv.className = 'palette_color';
@@ -59,14 +51,17 @@ function renderPalettes(palettes) {
       colorsDiv.appendChild(colorDiv);
     });
 
+    // Añadir título y colores al elemento de lista
     li.appendChild(title);
     li.appendChild(colorsDiv);
     paletteList.appendChild(li);
   });
 }
 
+// Renderiza las paletas favoritas en su sección
 function renderFavorites(favorites) {
-  favoritesList.innerHTML = '';
+  favoritesList.innerHTML = ''; // Limpiar lista anterior
+
   favorites.forEach(palette => {
     const li = document.createElement('li');
     li.className = 'palette-item';
@@ -95,23 +90,28 @@ function renderFavorites(favorites) {
   });
 }
 
+// Añade o elimina una paleta de la lista de favoritas
 function toggleFavorite(palette) {
   let favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+
   const exists = favorites.find(p => p.name === palette.name);
 
   if (!exists) {
-    favorites.push(palette);
+    favorites.push(palette); // Añadir si no existe
   } else {
-    favorites = favorites.filter(p => p.name !== palette.name);
+    favorites = favorites.filter(p => p.name !== palette.name); // Eliminar si ya está
   }
 
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-  renderFavorites(favorites);
+  renderFavorites(favorites); // Actualizar vista
 }
 
-// Inicializar la app
-fetchPalettes().then(palettes => {
-  renderPalettes(palettes);
-  const favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
-  renderFavorites(favorites);
-});
+// Cargar paletas y favoritas al iniciar la página
+fetch('assets/palettes.json')
+  .then(response => response.json())
+  .then(palettes => {
+    renderPalettes(palettes);
+
+    const favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+    renderFavorites(favorites);
+  });
