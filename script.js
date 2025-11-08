@@ -27,19 +27,30 @@ function fetchPalettes() {
 function renderPalettes(palettes) {
   paletteList.innerHTML = '';
   palettes.forEach(palette => {
-    const div = document.createElement('div');
-    div.classList.add('palette');
-    div.dataset.name = palette.name;
+    const container = document.createElement('div');
+    container.classList.add('palette-container');
+
+    const title = document.createElement('h3');
+    title.textContent = palette.name;
+    title.classList.add('palette-title');
+
+    const paletteDiv = document.createElement('div');
+    paletteDiv.classList.add('palette');
+    paletteDiv.dataset.name = palette.name;
 
     palette.colors.forEach(color => {
-      const colorDiv = document.createElement('div');
-      colorDiv.classList.add('palette_color');
-      colorDiv.style.backgroundColor = color;
-      div.appendChild(colorDiv);
-    });
+    const colorDiv = document.createElement('div');
+    colorDiv.classList.add('palette_color');
+    colorDiv.style.backgroundColor = color;
+    paletteDiv.appendChild(colorDiv);
+});
 
-    div.addEventListener('click', () => toggleFavorite(palette));
-    paletteList.appendChild(div);
+paletteDiv.addEventListener('click', () => toggleFavorite(palette));
+
+container.appendChild(title);
+container.appendChild(paletteDiv);
+paletteList.appendChild(container);
+
   });
 }
 
@@ -61,6 +72,12 @@ function toggleFavorite(palette) {
 function renderFavorites(favorites) {
   favoritesList.innerHTML = '';
   favorites.forEach(palette => {
+    const title = document.createElement('h3');
+    title.textContent = palette.name;
+    title.style.marginBottom = '5px';
+    title.style.color = '#fff';
+    favoritesList.appendChild(title);
+
     const div = document.createElement('div');
     div.classList.add('palette');
 
