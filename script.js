@@ -27,30 +27,28 @@ function fetchPalettes() {
 function renderPalettes(palettes) {
   paletteList.innerHTML = '';
   palettes.forEach(palette => {
-    const container = document.createElement('div');
-    container.classList.add('palette-container');
+    const li = document.createElement('li');
+    li.classList.add('palette-item');
 
     const title = document.createElement('h3');
     title.textContent = palette.name;
     title.classList.add('palette-title');
 
-    const paletteDiv = document.createElement('div');
-    paletteDiv.classList.add('palette');
-    paletteDiv.dataset.name = palette.name;
+    const colorsDiv = document.createElement('div');
+    colorsDiv.classList.add('palette');
 
     palette.colors.forEach(color => {
-    const colorDiv = document.createElement('div');
-    colorDiv.classList.add('palette_color');
-    colorDiv.style.backgroundColor = color;
-    paletteDiv.appendChild(colorDiv);
-});
+      const colorDiv = document.createElement('div');
+      colorDiv.classList.add('palette_color');
+      colorDiv.style.backgroundColor = color;
+      colorsDiv.appendChild(colorDiv);
+    });
 
-paletteDiv.addEventListener('click', () => toggleFavorite(palette));
+    colorsDiv.addEventListener('click', () => toggleFavorite(palette));
 
-container.appendChild(title);
-container.appendChild(paletteDiv);
-paletteList.appendChild(container);
-
+    li.appendChild(title);
+    li.appendChild(colorsDiv);
+    paletteList.appendChild(li);
   });
 }
 
