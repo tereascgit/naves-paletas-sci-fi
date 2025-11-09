@@ -42,10 +42,6 @@ ul {
   border-color: #555;
 }
 
-.palette.selected {
-  border-color: gold;
-}
-
 /* Cada color */
 .palette_color {
   width: 40px;
